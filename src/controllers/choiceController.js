@@ -18,6 +18,7 @@ export async function createChoice(req, res) {
         );
     }
 
+
     const pollExpiration = currentPoll.expireAt;
     const dateOfChoice = dayjs().format("YYYY-MM-D hh:mm");
    
@@ -34,7 +35,7 @@ export async function createChoice(req, res) {
       return res.status(409).send("Título inválido!");
     }
 
-    await db.collection("choices").insertOne({ ...title, votes: 0 });
+    await db.collection("choices").insertOne({ title, pollId });
 
     return res
       .status(201)
@@ -53,8 +54,8 @@ export async function getChoices(req, res){
   console.log(pollId)
 
   try {
-    const poll = await db.collection("choices").find({pollId:pollId}).toArray();
-    console.log(poll)
+    const poll = await db.collection("choices").find({pollId}).toArray();
+
     if (poll === null) {
       res.status(404).send("Enquete não existe.")
     } else {
