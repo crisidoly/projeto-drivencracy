@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { createChoice, sendChoice } from "../controllers/choiceController.js";
-import { choiceValidate } from "../middleware/choiceValidate.js";
+import { createChoice } from "../controllers/choiceController.js";
+import { choiceValidate } from "../middlewares/validarChoice.js";
 
 const choiceRouter = Router();
 
-choiceRouter.post("/choice", choiceValidate(choiceSchema), createChoice);
+choiceRouter.post("/choice", choiceValidate, createChoice);
 
 export default choiceRouter;

@@ -1,6 +1,6 @@
 import { Router } from "express"
-import pollRouter from "./poll.routes.js"
-import choiceRouter from "./choice.routes.js"
+import pollRouter from "./poolRouter.js"
+import choiceRouter from "./choiceRouter.js"
 
 const router = Router()
 

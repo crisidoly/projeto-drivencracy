@@ -3,18 +3,15 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const client = new MongoClient(process.env.DATABASE_URL);
+const mongoClient = new MongoClient(process.env.DATABASE_URL);
 
-export default async function conexaoDatabase() {
-  try {
-    await client.connect();
-    console.log("Conectado ao banco de dados");
-    return client.db();
-  } catch (error) {
-    console.log(error);
-    throw new Error("Falha ao conectar ao banco de dados");
-  }
+try {
+    await mongoClient.connect();
+    console.log("MongoDB conectado!");
+} catch (err) {
+    (err) => console.log(err.message);
 }
 
+const db = mongoClient.db();
 
-export const db = client.db();
+export default db;

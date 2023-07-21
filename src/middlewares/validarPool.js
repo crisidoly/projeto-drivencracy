@@ -1,6 +1,6 @@
 import poolSchema from "../schemas/poolSchema.js";
 
-export function validatePool(req, res, next) {
+function validatePool(req, res, next) {
   const pool = req.body;
 
   const validation = poolSchema.validate(pool);
@@ -11,3 +11,4 @@ export function validatePool(req, res, next) {
 
   next();
 }
+export default validatePool

@@ -3,25 +3,46 @@ import db from "../database/databaseConnection.js";
 import { ObjectId } from "mongodb";
 
 export async function createChoice(req, res) {
-  const { title, pollId } = req.body 
+  const { title, pollId } = req.body;
 
-    try {
-      const searchPoll = await db.collection('polls').findOne({ _id:  new ObjectId(pollId) } )
-        if(!searchPoll) return res.sendStatus(404)
+  
+  try {
 
-      const expiredDate = searchPoll.expiredAt
+    const currentPoll = await db.collection("polls").findOne(new ObjectId(pollId));
 
-      const expired = dayjs().isAfter(expiredDate, 'days')
-          if(expired) return res.sendStatus(403)
-    
-      const searchChoice = await db.collection('choices').findOne({ title: title })    
-        if(searchChoice) return res.sendStatus(409)
-      
-      await db.collection('choices').insertOne({title, pollId })
-
-      res.sendStatus(201)
-
-    } catch(err){
-      res.status(500).send(err.message)
+    if (!currentPoll) {
+      return res
+        .status(404)
+        .send(
+          "Enquete não encontrada!"
+        );
     }
+
+    const pollExpiration = currentPoll.expireAt;
+    const dateOfChoice = dayjs().format("YYYY-MM-D hh:mm");
+    if (dateOfChoice > pollExpiration) {
+      return res
+        .status(403)
+    }
+
+    const pollChoices = await db
+      .collection("choices")
+      .findOne({ title: title });
+
+    if (pollChoices) {
+      return res.status(409).send("Título inválido!");
+    }
+
+    await db.collection("choices").insertOne({ ...title, votes: 0 });
+
+    return res
+      .status(201)
+      .send(
+        `Adicionado com sucesso!`
+      );
+
+  } catch (error) {
+    console.log(error);
+    return res.sendStatus(500);
   }
+}
